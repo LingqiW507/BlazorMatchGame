@@ -63,6 +63,7 @@
         "🐶","🐶",
     };
 
+
     //create a second list to store the shuffled emoji.
     List<string> shuffledAnimals = new List<string>();
     int matchesFound = 0;
@@ -121,7 +122,7 @@
                 .ToList();
 
             matchesFound++;
-            scoreDisplay++;
+            scoreDisplay++;// 1 pair of emojis found get 1(and I want to let 1 pair worth 100point I don't know where can I put and How to do multiplication)
 
             if (matchesFound == 8)
             {
