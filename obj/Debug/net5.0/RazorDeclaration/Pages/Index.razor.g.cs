@@ -13,77 +13,77 @@ namespace BlazorMatchGame.Pages
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Components;
 #nullable restore
-#line 1 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 1 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using System.Net.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 2 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using System.Net.Http.Json;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 3 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.AspNetCore.Components.Forms;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 4 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.AspNetCore.Components.Routing;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 5 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.AspNetCore.Components.Web;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 6 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 6 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.AspNetCore.Components.Web.Virtualization;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 7 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 7 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 8 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 8 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using Microsoft.JSInterop;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 9 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 9 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using BlazorMatchGame;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 10 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/_Imports.razor"
+#line 10 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/_Imports.razor"
 using BlazorMatchGame.Shared;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 2 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/Pages/Index.razor"
+#line 2 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/Pages/Index.razor"
 using System.Timers;
 
 #line default
@@ -98,15 +98,9 @@ using System.Timers;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 45 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/Pages/Index.razor"
+#line 44 "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGameFinal/BlazorMatchGame/Pages/Index.razor"
       
-    List<string> difficultyLevel = new List<string>()
-    {
-            "Easy",
-            "Medium",
-            "Hard",
 
-        };
     //create a list of eight pairs of emoji.
     List<string> animalEmoji = new List<string>()
 {
@@ -119,13 +113,28 @@ using System.Timers;
         "🐯","🐯",
         "🐶","🐶",
     };
+    //create a list of eight pairs to hide all the emoji.
+    List<string> hiddenEmoji = new List<string>()
+{
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+    };
+
 
     //create a second list to store the shuffled emoji.
     List<string> shuffledAnimals = new List<string>();
+
     int matchesFound = 0;
     Timer timer;
     int tenthsOfSecondsElapsed = 0;
     string timeDisplay;
+
     int scoreDisplay = 0;
 
     //set up the game every time the page is reload.
@@ -148,51 +157,72 @@ using System.Timers;
             .ToList();
 
         matchesFound = 0;
-        tenthsOfSecondsElapsed = 0;
-        scoreDisplay = matchesFound *100;
+        tenthsOfSecondsElapsed = 450; //Set up the time:45s
+
+        //reset the hidden emoji. Let it get back to the beginning
+        for (int h = 0; h < hiddenEmoji.Count; h++)
+        {
+            hiddenEmoji[h] = "🚩";
+        }
     }
     //the end of a method the sets up the game
 
 
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
+    int firstSelected;
+    int lastSelected;
 
-    private void ButtonClick(string animal, string animalDescription)
+    private void ButtonClick(string animal, string animalDescription, int index)
     {
-        if (lastAnimalFound == string.Empty)
+        if ((lastAnimalFound == string.Empty) && (hiddenEmoji[index] != string.Empty))
         {
+            if (hiddenEmoji[firstSelected] != string.Empty)
+            {
+                hiddenEmoji[firstSelected] = "🚩";
+                hiddenEmoji[lastSelected] = "🚩";
+            }
+
             //First selection of the pair. Remember it.
             lastAnimalFound = animal;
             lastDescription = animalDescription;
+            firstSelected = index; // Record the first clicked button's index
+
+            hiddenEmoji[index] = animal;
 
             timer.Start();
         }
-        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+
+        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription) && (hiddenEmoji[index] != string.Empty))
         {
             //Match found! Reset for next pair.
             lastAnimalFound = string.Empty;
-
+            hiddenEmoji[index] = animal;
             //Replace found animals with empty string to hide them.
-            shuffledAnimals = shuffledAnimals
-                .Select(a => a.Replace(animal, string.Empty))
-                .ToList();
+            hiddenEmoji = hiddenEmoji
+            .Select(a => a.Replace(animal, string.Empty))
+            .ToList();
 
             matchesFound++;
-            scoreDisplay++;
+            scoreDisplay += 100;// 1 pair of emojis found get 1(and I want to let 1 pair worth 100point I don't know where can I put and How to do multiplication)
 
             if (matchesFound == 8)
             {
                 timer.Stop();
                 timeDisplay += " - Play Again?";
+
+
                 SetUpGame();
             }
         }
-        else
+        else if (hiddenEmoji[index] != string.Empty)
         {
 
             //User selected a pair that don't match.
             //Reset selection.
             lastAnimalFound = string.Empty;
+            lastSelected = index;
+            hiddenEmoji[index] = animal;
 
         }
 
@@ -200,62 +230,21 @@ using System.Timers;
     private void Timer_Tick(Object source, ElapsedEventArgs e)
     {
         InvokeAsync(() =>
-        {
-            tenthsOfSecondsElapsed++;
+        {//let the time countdown
+            tenthsOfSecondsElapsed--;
             timeDisplay = (tenthsOfSecondsElapsed / 10F)
                 .ToString("0.0s");
+            if (tenthsOfSecondsElapsed <= 0)
+            {
+                timer.Stop();
+                timeDisplay = "0.0s - You lost!";
+                lastAnimalFound = string.Empty;
+                SetUpGame();
+            }
+
             StateHasChanged();
         });
     }
-    /******* 
-    Change this game become a memorized game.
-    Set up a button to start the game
-    At the first two second player can saw all the emoji.
-    Then, these emojis should be invisible.
-    Players need to use their memory to find the corresponding pairing.******/
-
-    /***********
-    -------------------------------- For REQUIREMENT A --------------------------------------
-    Get 100 pts when the player find a pair;
-    Easy: There is only one chance. The game ends when the player chooses the wrong pair for the second time.
-    Medium: There are three chances, The game ends when the player chooses the wrong pair for the fourth time.
-    Hard: There are Five chances, The game ends when the player chooses the wrong pair for the sixth time.
-                                                                                                            ***********/
-
-
-    /***********
-    -------------------------------- For REQUIREMENT B --------------------------------------
-    I will set up this matching game in three difficulties: Easy, Medium and Hard.
-    Player can click a button before they start the game. 
-    Easy: 4pairs
-    "🦊","🦊",
-    "🐸","🐸",
-    "🐏","🐏",
-    "🐺","🐺".
-    Medium: 8pairs
-    "🦊","🦊",
-    "🐸","🐸",
-    "🐏","🐏",
-    "🐺","🐺",
-    "🦉","🦉",
-    "🐰","🐰",
-    "🐯","🐯",
-    "🐶","🐶".
-    Hard: 16pairs
-    "🦊","🦊","🐭","🐭",
-    "🐸","🐸","🦁","🦁",
-    "🐺","🐺","🐷","🐷",
-    "🐰","🐰","🦋","🦋",
-    "🐶","🐶","🐼","🐼",
-    "🐏","🐏","🐤","🐤",
-    "🦉","🦉","🐵","🐵",
-    "🐯","🐯","🐹","🐹".
-                                                                                                                 ******/
-    /**********
-    -------------------------------- For REQUIREMENT C --------------------------------------
-    Make the game timer count down instead of up. If the timer reaches 0 before all matches are made, the player loses.
-    Add a variable to keep track of the shortest time to complete all matches
-                                                                                                              *********/
 
 #line default
 #line hidden

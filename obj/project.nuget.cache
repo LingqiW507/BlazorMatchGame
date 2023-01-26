@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rGUV8ZsVqimBAS2AZFAAydkp1WZMc2WWgMSASPVLSx500wUUIXJqgJ73xqUD6sN7h7v/m+XjssCI/bQLyme7/A==",
+  "dgSpecHash": "1ix8pZkT18j/e3cEnDVJd2k7qgPPYR81wcMvLIchil23k8u9fXrFyobP//FrwkcuyAhcItdR4DxiHkhTcWrkXA==",
   "success": true,
-  "projectFilePath": "/Users/maggieweng/Desktop/dgm 6308/projects/BlazorMatchGame/BlazorMatchGame/BlazorMatchGame.csproj",
+  "projectFilePath": "/Users/maggieweng/Desktop/BlazorMatchGameFinal/BlazorMatchGame/BlazorMatchGame.csproj",
   "expectedPackageFiles": [
     "/Users/maggieweng/.nuget/packages/microsoft.aspnetcore.authorization/5.0.17/microsoft.aspnetcore.authorization.5.0.17.nupkg.sha512",
     "/Users/maggieweng/.nuget/packages/microsoft.aspnetcore.components/5.0.17/microsoft.aspnetcore.components.5.0.17.nupkg.sha512",

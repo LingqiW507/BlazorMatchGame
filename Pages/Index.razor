@@ -10,23 +10,23 @@
         height: 100px;
         font-size: 50px;
     }
+
+
 </style>
 <div class="container">
 
-    <div class="row">
-        <h4>Select a difficulty:</h4>
-    </div>
-    
-   
+
     <div class="row">
         @for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
         {
             var animal = shuffledAnimals[animalNumber];
-            var uniqueDescription = $"Button #{animalNumber}";
+            var uniqueDescription = $"Button {animalNumber}";
+            var hidEmoji = hiddenEmoji[animalNumber];
+            int index = animalNumber;
             <div class="col-3">
-                <button @onclick="@(() => ButtonClick(animal, uniqueDescription))"
+                <button @onclick="@(() => ButtonClick(animal, uniqueDescription, index))"
                         type="button" class="btn-outline-dark">
-                    <h1>@animal</h1>
+                    <h1>@hiddenEmoji[animalNumber]</h1>
                 </button>
             </div>
         }
@@ -40,16 +40,9 @@
     <div class="row">
         <h2>Scores: @scoreDisplay</h2>
     </div>
-
 </div>
 @code{
-    List<string> difficultyLevel = new List<string>()
-    {
-            "Easy",
-            "Medium",
-            "Hard",
 
-        };
     //create a list of eight pairs of emoji.
     List<string> animalEmoji = new List<string>()
 {
@@ -62,14 +55,28 @@
         "🐯","🐯",
         "🐶","🐶",
     };
+    //create a list of eight pairs to hide all the emoji.
+    List<string> hiddenEmoji = new List<string>()
+{
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+        "🚩","🚩",
+    };
 
 
     //create a second list to store the shuffled emoji.
     List<string> shuffledAnimals = new List<string>();
+
     int matchesFound = 0;
     Timer timer;
     int tenthsOfSecondsElapsed = 0;
     string timeDisplay;
+
     int scoreDisplay = 0;
 
     //set up the game every time the page is reload.
@@ -92,51 +99,72 @@
             .ToList();
 
         matchesFound = 0;
-        tenthsOfSecondsElapsed = 0;
-        scoreDisplay = matchesFound *100;
+        tenthsOfSecondsElapsed = 450; //Set up the time:45s
+
+        //reset the hidden emoji. Let it get back to the beginning
+        for (int h = 0; h < hiddenEmoji.Count; h++)
+        {
+            hiddenEmoji[h] = "🚩";
+        }
     }
     //the end of a method the sets up the game
 
 
     string lastAnimalFound = string.Empty;
     string lastDescription = string.Empty;
+    int firstSelected;
+    int lastSelected;
 
-    private void ButtonClick(string animal, string animalDescription)
+    private void ButtonClick(string animal, string animalDescription, int index)
     {
-        if (lastAnimalFound == string.Empty)
+        if ((lastAnimalFound == string.Empty) && (hiddenEmoji[index] != string.Empty))
         {
+            if (hiddenEmoji[firstSelected] != string.Empty)
+            {
+                hiddenEmoji[firstSelected] = "🚩";
+                hiddenEmoji[lastSelected] = "🚩";
+            }
+
             //First selection of the pair. Remember it.
             lastAnimalFound = animal;
             lastDescription = animalDescription;
+            firstSelected = index; // Record the first clicked button's index
+
+            hiddenEmoji[index] = animal;
 
             timer.Start();
         }
-        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription))
+
+        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription) && (hiddenEmoji[index] != string.Empty))
         {
             //Match found! Reset for next pair.
             lastAnimalFound = string.Empty;
-
+            hiddenEmoji[index] = animal;
             //Replace found animals with empty string to hide them.
-            shuffledAnimals = shuffledAnimals
-                .Select(a => a.Replace(animal, string.Empty))
-                .ToList();
+            hiddenEmoji = hiddenEmoji
+            .Select(a => a.Replace(animal, string.Empty))
+            .ToList();
 
             matchesFound++;
-            scoreDisplay++;// 1 pair of emojis found get 1(and I want to let 1 pair worth 100point I don't know where can I put and How to do multiplication)
+            scoreDisplay += 100;// 1 pair of emojis found get 1(and I want to let 1 pair worth 100point I don't know where can I put and How to do multiplication)
 
             if (matchesFound == 8)
             {
                 timer.Stop();
                 timeDisplay += " - Play Again?";
+
+
                 SetUpGame();
             }
         }
-        else
+        else if (hiddenEmoji[index] != string.Empty)
         {
 
             //User selected a pair that don't match.
             //Reset selection.
             lastAnimalFound = string.Empty;
+            lastSelected = index;
+            hiddenEmoji[index] = animal;
 
         }
 
@@ -144,60 +172,22 @@
     private void Timer_Tick(Object source, ElapsedEventArgs e)
     {
         InvokeAsync(() =>
-        {
-            tenthsOfSecondsElapsed++;
+        {//let the time countdown
+            tenthsOfSecondsElapsed--;
             timeDisplay = (tenthsOfSecondsElapsed / 10F)
                 .ToString("0.0s");
+            if (tenthsOfSecondsElapsed <= 0)
+            {
+                timer.Stop();
+                timeDisplay = "0.0s - You lost!";
+                lastAnimalFound = string.Empty;
+                SetUpGame();
+            }
+
             StateHasChanged();
         });
     }
-    /******* 
-    Change this game become a memorized game.
-    Set up a button to start the game
-    At the first two second player can saw all the emoji.
-    Then, these emojis should be invisible.
-    Players need to use their memory to find the corresponding pairing.******/
-
-    /***********
-    -------------------------------- For REQUIREMENT A --------------------------------------
-    Get 100 pts when the player find a pair;
-    Easy: There is only one chance. The game ends when the player chooses the wrong pair for the second time.
-    Medium: There are three chances, The game ends when the player chooses the wrong pair for the fourth time.
-    Hard: There are Five chances, The game ends when the player chooses the wrong pair for the sixth time.
-                                                                                                            ***********/
-
-
-    /***********
-    -------------------------------- For REQUIREMENT B --------------------------------------
-    I will set up this matching game in three difficulties: Easy, Medium and Hard.
-    Player can click a button before they start the game. 
-    Easy: 4pairs
-    "🦊","🦊",
-    "🐸","🐸",
-    "🐏","🐏",
-    "🐺","🐺".
-    Medium: 8pairs
-    "🦊","🦊",
-    "🐸","🐸",
-    "🐏","🐏",
-    "🐺","🐺",
-    "🦉","🦉",
-    "🐰","🐰",
-    "🐯","🐯",
-    "🐶","🐶".
-    Hard: 16pairs
-    "🦊","🦊","🐭","🐭",
-    "🐸","🐸","🦁","🦁",
-    "🐺","🐺","🐷","🐷",
-    "🐰","🐰","🦋","🦋",
-    "🐶","🐶","🐼","🐼",
-    "🐏","🐏","🐤","🐤",
-    "🦉","🦉","🐵","🐵",
-    "🐯","🐯","🐹","🐹".
-                                                                                                                 ******/
-    /**********
-    -------------------------------- For REQUIREMENT C --------------------------------------
-    Make the game timer count down instead of up. If the timer reaches 0 before all matches are made, the player loses.
-    Add a variable to keep track of the shortest time to complete all matches
-                                                                                                              *********/
 }
+
+
+    
